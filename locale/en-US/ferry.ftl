@@ -1,6 +1,6 @@
 ferry-menu-promote =
-    .label = Make available on mobile
-    .accesskey = M
+    .label = Convert to stored attachment
+    .accesskey = C
 ferry-menu-revert =
     .label = Return to linked
     .accesskey = R

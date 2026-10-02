@@ -39,8 +39,7 @@ Also required:
   (Settings → Advanced → Files and Folders). On Linux under a Flatpak sandbox it may
   look different from Windows; what matters is that it points at the same folder and
   that attachments are stored in the `attachments:<relative>` form.
-- **Zotero 10+** — the manifest declares `strict_min_version: 10.0` and no upper
-  bound, so it keeps installing on newer releases.
+- **Zotero 10.x** — installation and the linked/stored round trip are tested on 10.0.3.
 - Attachment paths stored **relative**. Ferry writes them that way by default; the
   historical absolute ones in an existing library are what break cross-machine.
 
@@ -62,7 +61,7 @@ a tablet. Stock Zotero converts linked → stored but has **no** reverse.
 
 Right-click an item or attachment → **Ferry**:
 
-- **Make available on mobile** — copies the file into Zotero storage, flips the item
+- **Convert to stored attachment** — copies the file into Zotero storage, flips the item
   to `storage:<filename>`, records the original linked path, tags it `Stored`. The
   Calibre original is never touched.
 - **Return to linked** — reads the recorded path back, resolves it against the

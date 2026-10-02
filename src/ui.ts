@@ -30,7 +30,8 @@ function mainWindow(): Document | null {
 
 function prefBool(key: string, fallback: boolean): boolean {
 	try {
-		const v = Zotero.Prefs.get(key);
+		const v = Zotero.Prefs.get(key, true);
+		if (v === undefined) return fallback;
 		return typeof v === 'boolean' ? v : v === 'true';
 	} catch {
 		return fallback;
@@ -87,7 +88,7 @@ function confirmAction(action: 'promote' | 'revert', count: number): boolean {
 	}
 	const doc = mainWindow();
 	const prompt = (doc?.defaultView as any)?.Services?.prompt ?? (Services as any).prompt;
-	const title = action === 'promote' ? 'Zotero Ferry — Make available on mobile' : 'Zotero Ferry — Return to linked';
+	const title = action === 'promote' ? 'Zotero Ferry — Convert to stored attachment' : 'Zotero Ferry — Return to linked';
 	const text =
 		action === 'promote'
 			? `Promote ${count} linked attachment${count === 1 ? '' : 's'} to stored files?\n\n` +
@@ -111,7 +112,7 @@ function reportResults(action: 'promote' | 'revert', results: OpResult[], dryRun
 	const doc = mainWindow();
 	const prompt = (doc?.defaultView as any)?.Services?.prompt ?? (Services as any).prompt;
 	const heading =
-		action === 'promote' ? 'Zotero Ferry — Make available on mobile' : 'Zotero Ferry — Return to linked';
+		action === 'promote' ? 'Zotero Ferry — Convert to stored attachment' : 'Zotero Ferry — Return to linked';
 	const summary = dryRun
 		? `Dry run — nothing was written.\n\nWould succeed: ${ok}, skip: ${skipped}, fail: ${failed}${tail}`
 		: `Finished: ${ok} succeeded, ${skipped} skipped, ${failed} failed${tail}`;
@@ -171,7 +172,7 @@ function rebuildMenu(doc: Document): void {
 		popup.appendChild(el);
 	};
 
-	makeItem(PROMOTE_ID, 'Make available on mobile', promoteEligible > 0, () => void run('promote'));
+	makeItem(PROMOTE_ID, 'Convert to stored attachment', promoteEligible > 0, () => void run('promote'));
 	makeItem(REVERT_ID, 'Return to linked', revertEligible > 0, () => void run('revert'));
 
 	parent.appendChild(popup);
@@ -182,8 +183,10 @@ export function registerMenu(): void {
 	const doc = mainWindow();
 	if (!doc) return;
 
-	popupListener = () => rebuildMenu(doc);
 	const menu = doc.getElementById('zotero-itemmenu');
+	popupListener = (event) => {
+		if (event.target === menu) rebuildMenu(doc);
+	};
 	menu?.addEventListener('popupshowing', popupListener);
 }
 

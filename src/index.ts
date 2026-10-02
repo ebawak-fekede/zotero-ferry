@@ -26,7 +26,7 @@ import {
 } from './paths';
 
 export interface FerryApi {
-	init(data: { rootURI: { spec: string } }): Promise<void>;
+	init(data: { id: string; rootURI: string | { spec: string } }): Promise<void>;
 	shutdown(): void;
 	promoteOne: typeof promoteOne;
 	promoteMany: typeof promoteMany;
@@ -47,13 +47,20 @@ export interface FerryApi {
 }
 
 const api: FerryApi = {
-	async init() {
+	async init(data) {
 		await Zotero.initializationPromise;
+		await Zotero.PreferencePanes.register({
+			id: 'zotero-ferry-preferences',
+			pluginID: data.id,
+			src: 'prefs.xhtml',
+			label: 'Zotero Ferry',
+		});
 		registerMenu();
 		Zotero.debug('zotero-ferry: ready');
 	},
 	shutdown() {
 		unregisterMenu();
+		Zotero.PreferencePanes.unregister('zotero-ferry-preferences');
 	},
 	promoteOne,
 	promoteMany,
