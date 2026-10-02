@@ -1,17 +1,22 @@
 # zotero-ferry
 
-Promote Zotero **linked** attachments to **stored** files so they sync to mobile,
-then ferry them back to their original linked paths when you're done.
+## The problem
 
-For a library that lives in Calibre, where the free 300 MB of Zotero storage can't
-hold every book but the mobile app won't open linked files.
+Your library lives in Calibre — books, hundreds of them, kept in one folder and synced
+between machines. Zotero's free 300 MB can't hold that. But the mobile app will only
+open **stored** attachments, which copy the file into Zotero storage and bill your
+quota for the privilege.
 
-## Please buy a subscription if you can
+| | Linked attachment | Stored attachment |
+|---|---|---|
+| Where the file lives | your Calibre folder | inside Zotero |
+| Uses free-tier quota | no | **yes** |
+| Opens in the mobile app | **no** | yes |
+| Calibre stays the single copy | yes | no (duplicate) |
 
-This is a workaround for being broke, not a replacement for paying. Zotero is free
-software from a small non-profit, and storage subscriptions are what fund the sync
-servers, mobile apps and developers. If Ferry saves you that money, consider sending
-some of it Zotero's way anyway.
+You want linked attachments day to day and stored ones only for whatever you're
+actively reading on a tablet. Stock Zotero converts linked → stored, but has **no way
+back**. Ferry does both directions and remembers where each file came from.
 
 ## Install
 
@@ -19,73 +24,72 @@ Grab `zotero-ferry-<version>.xpi` from the
 [latest release](https://github.com/ebawak-fekede/zotero-ferry/releases/latest) and
 install it via **Tools → Add-ons → gear → Install Add-on From File…**.
 
-Zotero then updates it on its own: the manifest's `update_url` points at the
-`update.json` shipped with each release. The `.xpi` is unsigned.
+Zotero updates it on its own afterwards. The `.xpi` is unsigned.
 
 ## Usage
 
 Right-click an item or attachment → **Ferry**:
 
-- **Convert to stored attachment** — copies the file into Zotero storage, records the
-  original linked path and tags it `Stored`. The Calibre original is never touched.
-- **Return to linked** — resolves the recorded path against the *current* base
-  directory, deletes the stored copy, drops the tags.
+- **Convert to stored attachment** — copies the file into Zotero storage and remembers
+  the original location. The Calibre original is never touched.
+- **Return to linked** — puts the file back where it came from and removes the stored
+  copy.
 
 Select a parent to act on every attachment beneath it. Both actions batch and report
 what succeeded, was skipped, or failed.
 
 ## Setup
 
-Everything Ferry manages must sit under the linked-attachment base directory:
+Everything Ferry manages must live under Zotero's linked-attachment base directory,
+with the Calibre library inside it:
 
 ```
-Zotero linked files/            <- Linked Attachment Base Directory
-├── Calibre Library/            <- your Calibre library lives inside it
-│   └── <Author>/<Title> (<id>)/<file>
-└── ...
+Zotero linked files/          <- set this as the Linked Attachment Base Directory
+└── Calibre Library/
 ```
 
-- Set **Linked Attachment Base Directory** on *every* machine (Settings → Advanced →
-  Files and Folders). Paths may look different per OS; what matters is that they point
-  at the same folder.
-- Keep that folder identical across machines with any file-sync tool. Zotero never
-  syncs linked files.
+- Set that base directory on *every* machine (Settings → Advanced → Files and Folders).
+  The path can differ per machine; it just has to point at the same folder.
+- Keep the folder in sync across machines yourself. Zotero never syncs linked files.
 - Zotero 10.x — tested against 10.0.3.
-
-Files outside the base directory still work, but their origin is stored as an absolute
-path and won't resolve on another machine.
 
 ## How it works
 
-- The origin is remembered as a **relative** path (`attachments:Calibre Library/…`) in
-  a tag, so it syncs with the library and survives being moved between machines.
-  Renaming or formatting that tag is configurable under Settings → Zotero Ferry.
-- Promoting **copies**. The original on disk is byte-identical afterwards.
-- **Annotations survive** — they live in the database against the attachment item, not
-  in the PDF. Ferry only writes them into the file if you use Zotero's "Save to PDF".
-- A stored attachment with **no recorded origin is skipped**, not deleted, as is a
-  restore whose original file has gone missing.
+- **The original location is remembered**, as a relative path, so promoting on one
+  machine and reverting on another works even when the folder sits somewhere else.
+- **Promoting copies** rather than moves, so the Calibre file is unchanged and going
+  back is always possible.
+- **Annotations are kept.** They live in Zotero's database against the item rather than
+  in the PDF, so a round trip doesn't disturb them.
+- **Nothing is destroyed on a mistake.** A stored file whose original location wasn't
+  recorded is left alone rather than deleted, and so is a restore whose original has
+  gone missing.
 
 ## Develop
 
 ```sh
 pnpm install
-pnpm typecheck        # tsc --noEmit
-pnpm test             # path/memory unit tests + packaging regressions
-pnpm build            # -> dist/zotero-ferry-<version>.xpi + update.json
+pnpm typecheck
+pnpm test
+pnpm build
 ```
 
-Release with `pnpm bump:patch | bump:minor | bump:major`, then `git push --follow-tags`
-— the tag triggers the workflow that validates, builds and publishes. See
-[CONTRIBUTING.md](CONTRIBUTING.md) for commit, branch and PR conventions.
+Release with `pnpm bump:patch | bump:minor | bump:major`, then `git push --follow-tags`.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for commit, branch and PR conventions.
 
 ## Limits
 
 - Group libraries can't use linked files, so Ferry works on the personal library only.
-- Zotero mobile/web never sees linked attachments; Ferry is the bridge for what you
-  read on mobile, everything else stays linked.
-- Reverting deletes the stored copy. Deleting an attachment while it's promoted loses
-  the recorded origin — revert first.
+- The mobile app never sees linked attachments; Ferry is the bridge for what you read
+  on mobile, everything else stays linked.
+- Reverting removes the stored copy. Delete an attachment only after reverting it.
+
+## Please buy a subscription if you can
+
+This is a workaround for being broke, not a replacement for paying. Zotero is free
+software from a small non-profit, and storage subscriptions are what fund the sync
+servers, mobile apps and developers. If Ferry saves you that money, consider sending
+some of it Zotero's way anyway.
 
 ## License
 
