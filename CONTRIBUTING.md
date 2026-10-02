@@ -37,11 +37,11 @@ feature/<TICKET>-<slug> when tied to an issue
 
 ## Pull requests
 
-Title prefix must match the branch prefix — `bugfix/…` becomes `bugfix: …`,
-`feature/…` becomes `feature: …`. Don't substitute the commit type.
+Title prefix must match the branch prefix. `bugfix/…` becomes `bugfix: …`, `feature/…`
+becomes `feature: …`. Don't substitute the commit type.
 
-Merge with a merge commit — the `Merge pull request #N from <org>/<branch>` shape —
-not squash, not rebase.
+Merge with a merge commit, the `Merge pull request #N from <org>/<branch>` shape. Not
+squash, not rebase.
 
 ## Releases
 
@@ -55,5 +55,5 @@ git push --follow-tags
 against `package.json`, runs typecheck/test/build, and publishes the `.xpi` plus
 the auto-update manifest.
 
-Never hand-edit the version in `manifest.json` — `build.mjs` injects it from
+Never hand-edit the version in `manifest.json`. `build.mjs` injects it from
 `package.json` at build time.
