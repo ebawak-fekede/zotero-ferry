@@ -2,13 +2,14 @@
   "manifest_version": 2,
   "name": "Zotero Ferry",
   "version": "0.1.0",
-  "description": "Temporarily promote linked attachments to stored files so they sync to mobile, then ferry them back to their original linked paths.",
+  "description": "Temporarily promote Zotero linked attachments to stored files so they sync to mobile, then ferry them back to their original linked paths.",
   "author": "ebawak-fekede",
+  "homepage_url": "https://github.com/ebawak-fekede/zotero-ferry",
   "applications": {
     "zotero": {
-      "id": "zotero-ferry@local",
-      "strict_min_version": "7.0",
-      "strict_max_version": "8.*"
+      "id": "zotero-ferry@ebawak-fekede.github.io",
+      "update_url": "https://github.com/ebawak-fekede/zotero-ferry/releases/latest/download/update.json",
+      "strict_min_version": "10.0"
     }
   }
 }
