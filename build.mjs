@@ -97,6 +97,7 @@ const updateManifest = {
           applications: {
             zotero: {
               strict_min_version: manifest.applications.zotero.strict_min_version,
+              strict_max_version: manifest.applications.zotero.strict_max_version,
             },
           },
         },

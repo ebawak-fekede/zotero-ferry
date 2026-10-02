@@ -52,7 +52,7 @@ function removeTag(item: any, tag: string) {
 
 export function readStoredPref(key: string, fallback: string): string {
 	try {
-		const value = Zotero.Prefs.get(key);
+		const value = Zotero.Prefs.get(key, true);
 		return value ? String(value) : fallback;
 	} catch {
 		return fallback;

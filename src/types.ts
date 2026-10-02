@@ -1,5 +1,5 @@
 /**
- * Minimal ambient declarations for the Zotero 7 script scope.
+ * Minimal ambient declarations for the Zotero 10 script scope.
  *
  * These cover only what zotero-ferry actually calls. They are intentionally
  * narrow — the point is type safety around our own logic, not a full re-typing
@@ -24,6 +24,10 @@ export interface ZoteroGlobal {
 	readonly isWin: boolean;
 	readonly initializationPromise: Promise<void>;
 	debug(message: string, level?: number): void;
+	PreferencePanes: {
+		register(options: { id: string; pluginID: string; src: string; label: string }): Promise<string>;
+		unregister(id: string): void;
+	};
 	Prefs: {
 		get(key: string, global?: boolean): string | number | boolean | undefined;
 		set(key: string, value: string | number | boolean, global?: boolean): void;
