@@ -3,8 +3,18 @@
 Temporarily promote Zotero **linked** attachments to **stored** files so they sync to
 mobile, then ferry them back to their original linked paths when you're done.
 
-For a library that lives in Calibre and is synced with Syncthing, where free-tier
+For a library that lives in Calibre, where free-tier
 Zotero storage can't hold every book but the mobile app won't open linked files.
+
+## Please buy a subscription if you can
+
+I wrote this because I couldn't afford Zotero Storage — the free 300 MB doesn't go far
+when your library is books. Ferry is a workaround for being broke, not a replacement
+for paying.
+
+Zotero is free software from a small non-profit, and storage subscriptions are what
+fund it: the sync servers, the mobile apps, the support, the developers. If Ferry just
+saved you that money, consider sending some of it Zotero's way anyway.
 
 ## Requirements
 
@@ -23,8 +33,8 @@ stored as an absolute path and won't resolve on another machine.
 
 Also required:
 
-- **Syncthing** (or similar) syncing `Zotero linked files/` across devices. Zotero
-  itself never syncs linked files — that's the whole point.
+- **A way to keep `Zotero linked files/` identical on every machine** (any file-sync
+  tool). Zotero itself never syncs linked files — that's the whole point.
 - **Linked Attachment Base Directory** set to that folder on *every* machine
   (Settings → Advanced → Files and Folders). On Linux under a Flatpak sandbox it may
   look different from Windows; what matters is that it points at the same folder and
@@ -39,7 +49,7 @@ Not required: Calibre running, any Calibre API, or network access.
 
 | | Linked attachment | Stored attachment |
 |---|---|---|
-| File lives in | `Zotero linked files/` (Syncthing) | `Zotero/storage/<KEY>/` |
+| File lives in | `Zotero linked files/` (yours to sync) | `Zotero/storage/<KEY>/` |
 | Consumes free-tier quota | no | **yes** |
 | Opens in Zotero mobile | **no** | yes |
 | Calibre stays source of truth | yes | no (duplicate) |
@@ -67,11 +77,8 @@ succeeded / skipped / failed.
 one machine, revert on another — it resolves against whatever the base directory is
 set to locally.
 
-**PathUtils-free.** The plugin never calls `PathUtils`. `PathUtils.join` throws
-`NS_ERROR_FILE_UNRECOGNIZED_PATH` when the base directory isn't a path the current
-platform recognises (a Windows-shaped `baseAttachmentPath` under Linux, say). Relative
-paths are handed to `item.attachmentPath` as bare strings; the setter takes it from
-there.
+**Works across machines.** Paths are stored relative and handled as plain strings, so
+a base directory that looks different on each OS doesn't break the round trip.
 
 **Copy, never move.** Promoting copies. The Calibre file stays byte-identical on
 disk, so a revert or a mistake can always go back.
@@ -97,8 +104,8 @@ item. Rename either in Settings → Zotero Ferry.
 ## Install
 
 ```sh
-npm install
-npm run build          # -> dist/zotero-ferry-0.1.0.xpi
+pnpm install
+pnpm build             # -> dist/zotero-ferry-0.1.0.xpi
 ```
 
 Then **Tools → Add-ons → gear → Install Add-on From File…** and enable it. The `.xpi`
@@ -113,9 +120,9 @@ change without writing anything.
 ## Development
 
 ```sh
-npm run typecheck      # tsc --noEmit
-npm test               # unit tests for the pure path/memory logic
-npm run build          # bundle + package
+pnpm typecheck         # tsc --noEmit
+pnpm test              # unit tests for the pure path/memory logic
+pnpm build             # bundle + package
 ```
 
 ```
