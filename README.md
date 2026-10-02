@@ -39,7 +39,8 @@ Also required:
   (Settings → Advanced → Files and Folders). On Linux under a Flatpak sandbox it may
   look different from Windows; what matters is that it points at the same folder and
   that attachments are stored in the `attachments:<relative>` form.
-- **Zotero 7+** (built against 8.*).
+- **Zotero 10+** — the manifest declares `strict_min_version: 10.0` and no upper
+  bound, so it keeps installing on newer releases.
 - Attachment paths stored **relative**. Ferry writes them that way by default; the
   historical absolute ones in an existing library are what break cross-machine.
 
@@ -103,19 +104,38 @@ item. Rename either in Settings → Zotero Ferry.
 
 ## Install
 
+Grab `zotero-ferry-<version>.xpi` from the
+[latest release](https://github.com/ebawak-fekede/zotero-ferry/releases/latest), then
+**Tools → Add-ons → gear → Install Add-on From File…** and enable it.
+
+From then on Zotero updates it on its own: the manifest points `update_url` at the
+`update.json` shipped with each release, so a new version is picked up without you
+re-downloading anything. The `.xpi` is unsigned.
+
+To build from source instead:
+
 ```sh
 pnpm install
-pnpm build             # -> dist/zotero-ferry-0.1.0.xpi
+pnpm build             # -> dist/zotero-ferry-<version>.xpi
 ```
-
-Then **Tools → Add-ons → gear → Install Add-on From File…** and enable it. The `.xpi`
-is unsigned, so it may need a debug-friendly build.
 
 ## Configure
 
 Plugin options live in **Settings → Zotero Ferry**: tag names for the status and
 origin markers, confirmation prompts, and a **dry run** mode that reports what would
 change without writing anything.
+
+## Releasing
+
+```sh
+pnpm bump:patch        # or bump:minor / bump:major
+git push --follow-tags
+```
+
+That commits `chore: Release v<version>`, tags it, and the release workflow builds,
+validates the tag against `package.json`, and publishes the `.xpi` alongside the
+auto-update manifest. See [CONTRIBUTING.md](CONTRIBUTING.md) for the commit and
+branch conventions.
 
 ## Development
 
