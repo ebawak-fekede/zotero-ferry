@@ -11,14 +11,14 @@ jobs:
       matrix:
         node-version: [24.x]
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
 
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@v6.1.0
         with:
           run_install: false
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v7.0.0
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
@@ -41,3 +41,10 @@ jobs:
           ls -l dist
           test -n "$(find dist -name '*.xpi' -print -quit)"
           test -f dist/update.json
+
+      - name: Upload tested add-on
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: zotero-ferry-pr
+          path: dist/*.xpi
+          if-no-files-found: error
