@@ -1,2 +1,5 @@
 allowBuilds:
   esbuild: true
+  es5-ext: false
+# zotero-types includes the Zotero project's Git-hosted PDF and EPUB definitions.
+blockExoticSubdeps: false

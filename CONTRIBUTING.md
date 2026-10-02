@@ -3,9 +3,9 @@
 ## Commits
 
 Conventional Commits. Subject is an imperative sentence in sentence case, so it
-reads as a command: *Add*, *Prioritize*, *Release*.
+reads as a command: _Add_, _Prioritize_, _Release_.
 
-```
+```txt
 <type>: <imperative subject>
 
 <body explaining what changed and why, wrapped near 72 columns>
@@ -14,7 +14,7 @@ reads as a command: *Add*, *Prioritize*, *Release*.
 Types in use: `feat`, `fix`, `chore`, plus `docs`, `refactor`, `test`, `ci`,
 `build`, `perf` where they fit.
 
-```
+```txt
 feat: Add video watermarking support
 
 Uses ffmpeg overlay to apply the same centered logo watermark
@@ -29,7 +29,7 @@ No trailing period on the subject. Scope (`feat(promote): …`) is optional.
 
 ## Branches
 
-```
+```txt
 feature/<slug>          new work
 bugfix/<slug>           fixes          <- bugfix/, not fix/
 feature/<TICKET>-<slug> when tied to an issue
@@ -45,7 +45,7 @@ not squash, not rebase.
 
 ## Releases
 
-```
+```bash
 pnpm bump:patch | bump:minor | bump:major
 git push --follow-tags
 ```
