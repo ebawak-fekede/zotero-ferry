@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 permissions:
   contents: write
@@ -47,6 +47,12 @@ jobs:
 
       - name: Run typecheck
         run: pnpm typecheck
+
+      - name: Run lint
+        run: pnpm lint
+
+      - name: Check formatting
+        run: pnpm format:check
 
       - name: Run tests
         run: pnpm test
