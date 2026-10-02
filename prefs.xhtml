@@ -1,0 +1,22 @@
+<vbox xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+     id="zotero-ferry-prefpane"
+     onload="ZoteroFerryPrefs.init()">
+	<groupbox>
+		<label><html:h2>Zotero Ferry</html:h2></label>
+		<description>Promote linked attachments to stored files for mobile reading, then return them to their original linked paths.</description>
+		<hbox align="center">
+			<label value="Tag marking a promoted item:"/>
+			<textbox id="zotero-ferry-storedTag" preference="extensions.zotero-ferry.storedTag" flex="1"/>
+		</hbox>
+		<hbox align="center">
+			<label value="Origin memory tag prefix:"/>
+			<textbox id="zotero-ferry-originTagPrefix" preference="extensions.zotero-ferry.originTagPrefix" flex="1"/>
+		</hbox>
+		<checkbox id="zotero-ferry-confirmPromote" preference="extensions.zotero-ferry.confirmPromote"
+			label="Confirm before promoting to stored"/>
+		<checkbox id="zotero-ferry-confirmRevert" preference="extensions.zotero-ferry.confirmRevert"
+			label="Confirm before returning to linked"/>
+		<checkbox id="zotero-ferry-dryRun" preference="extensions.zotero-ferry.dryRun"
+			label="Dry run: report what would change, write nothing"/>
+	</groupbox>
+</vbox>

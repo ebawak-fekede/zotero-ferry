@@ -1,0 +1,23 @@
+{
+  "name": "zotero-ferry",
+  "version": "0.1.0",
+  "description": "Temporarily promote Zotero linked attachments to stored files so they sync to mobile, then ferry them back to their original linked paths.",
+  "author": "ebawak-fekede",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "lib": "node build.mjs --lib",
+    "typecheck": "tsc --noEmit",
+    "test": "node build.mjs --lib && node --test tests/*.test.mjs",
+    "clean": "rm -rf build dist"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.2",
+    "typescript": "^5.7.2"
+  },
+  "allowScripts": {
+    "esbuild@0.24.2": true
+  }
+}

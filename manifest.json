@@ -1,0 +1,14 @@
+{
+  "manifest_version": 2,
+  "name": "Zotero Ferry",
+  "version": "0.1.0",
+  "description": "Temporarily promote linked attachments to stored files so they sync to mobile, then ferry them back to their original linked paths.",
+  "author": "ebawak-fekede",
+  "applications": {
+    "zotero": {
+      "id": "zotero-ferry@local",
+      "strict_min_version": "7.0",
+      "strict_max_version": "8.*"
+    }
+  }
+}
