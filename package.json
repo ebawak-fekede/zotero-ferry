@@ -11,8 +11,12 @@
     "lib": "node build.mjs --lib",
     "typecheck": "tsc --noEmit",
     "test": "node build.mjs --lib && node --test tests/*.test.mjs",
-    "clean": "rm -rf build dist"
+    "clean": "rm -rf build dist",
+    "bump:patch": "pnpm version patch --message \"chore: Release v%s\" --tag-version-prefix \"v\"",
+    "bump:minor": "pnpm version minor --message \"chore: Release v%s\" --tag-version-prefix \"v\"",
+    "bump:major": "pnpm version major --message \"chore: Release v%s\" --tag-version-prefix \"v\""
   },
+  "packageManager": "pnpm@11.25.0",
   "devDependencies": {
     "esbuild": "^0.24.2",
     "typescript": "^5.7.2"

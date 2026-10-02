@@ -1,0 +1,103 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Publish ${{ github.ref_name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out tagged revision
+        uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+        with:
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24.x
+          cache: pnpm
+
+      - name: Validate tag matches package version
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected_tag="v$(node -p "require('./package.json').version")"
+          if [[ "$GITHUB_REF_NAME" != "$expected_tag" ]]; then
+            echo "Tag $GITHUB_REF_NAME does not match package version $expected_tag"
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run typecheck
+        run: pnpm typecheck
+
+      - name: Run tests
+        run: pnpm test
+
+      - name: Run build
+        run: pnpm build
+
+      - name: Assert the release artefacts were produced
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./package.json').version")"
+          expected_xpi="dist/zotero-ferry-${version}.xpi"
+          ls -l dist
+          [[ -f "$expected_xpi" ]] || {
+            echo "Expected release artefact not built: $expected_xpi"
+            exit 1
+          }
+          [[ -f dist/update.json ]] || {
+            echo "Expected auto-update manifest not built: dist/update.json"
+            exit 1
+          }
+          node -e '
+            const u = require("./dist/update.json");
+            const id = require("./manifest.json").applications.zotero.id;
+            const entry = u.addons && u.addons[id];
+            if (!entry || !Array.isArray(entry.updates) || !entry.updates.length) {
+              throw new Error("update.json has no updates for " + id);
+            }
+            const latest = entry.updates[entry.updates.length - 1];
+            if (latest.version !== process.argv[1]) {
+              throw new Error(`update.json version ${latest.version} !== package version ${process.argv[1]}`);
+            }
+            if (!/^https:\/\//.test(latest.update_link)) {
+              throw new Error("update_link is not https: " + latest.update_link);
+            }
+            console.log("update.json OK:", latest.version, latest.update_link);
+          ' "$version"
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./package.json').version")"
+          xpi="dist/zotero-ferry-${version}.xpi"
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" "$xpi" dist/update.json --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" "$xpi" dist/update.json \
+              --title "$GITHUB_REF_NAME" \
+              --generate-notes
+          fi
