@@ -37,8 +37,11 @@ feature/<TICKET>-<slug> when tied to an issue
 
 ## Pull requests
 
-Title matches the squash subject. Merge with a merge commit — the
-`Merge pull request #N from <org>/<branch>` shape — not squash, not rebase.
+Title prefix must match the branch prefix — `bugfix/…` becomes `bugfix: …`,
+`feature/…` becomes `feature: …`. Don't substitute the commit type.
+
+Merge with a merge commit — the `Merge pull request #N from <org>/<branch>` shape —
+not squash, not rebase.
 
 ## Releases
 
@@ -54,12 +57,3 @@ the auto-update manifest.
 
 Never hand-edit the version in `manifest.json` — `build.mjs` injects it from
 `package.json` at build time.
-
-## Identity
-
-```
-user.name  ebawak-fekede
-user.email 175384315+ebawak-fekede@users.noreply.github.com
-```
-
-Set repo-locally rather than globally so it does not leak into other projects.
