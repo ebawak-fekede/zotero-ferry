@@ -1,6 +1,6 @@
 {
   "name": "zotero-ferry",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Temporarily promote Zotero linked attachments to stored files so they sync to mobile, then ferry them back to their original linked paths.",
   "author": "ebawak-fekede",
   "license": "MIT",
